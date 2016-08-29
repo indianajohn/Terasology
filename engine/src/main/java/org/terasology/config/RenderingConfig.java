@@ -398,7 +398,8 @@ public class RenderingConfig extends AbstractSubscribable {
     }
 
     public boolean isOculusVrSupport() {
-        return oculusVrSupport;
+        return true;
+        //return oculusVrSupport;
     }
 
     public void setOculusVrSupport(boolean oculusVrSupport) {
