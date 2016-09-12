@@ -111,7 +111,7 @@ public class DisplayResolutionDependentFBOs extends AbstractFBOsManager {
     private void updateFullScale() {
         if (screenGrabber.isNotTakingScreenshot()) {
             fullScale = new FBO.Dimensions(Display.getWidth(), Display.getHeight());
-            if (renderingConfig.isOculusVrSupport()) {
+            if (renderingConfig.isVrSupport()) {
                 fullScale.multiplySelfBy(OculusVrHelper.getScaleFactor());
             }
         } else {

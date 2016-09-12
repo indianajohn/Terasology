@@ -95,7 +95,7 @@ public class StateIngame implements GameState {
         networkSystem = context.get(NetworkSystem.class);
         storageManager = context.get(StorageManager.class);
 
-        if (context.get(Config.class).getRendering().isOculusVrSupport()
+        if (context.get(Config.class).getRendering().isVrSupport()
                 && OculusVrHelper.isNativeLibraryLoaded()) {
 
             logger.info("Trying to initialize Oculus SDK...");
@@ -115,7 +115,7 @@ public class StateIngame implements GameState {
 
     @Override
     public void dispose() {
-        if (context.get(Config.class).getRendering().isOculusVrSupport() && OculusVrHelper.isNativeLibraryLoaded()) {
+        if (context.get(Config.class).getRendering().isVrSupport() && OculusVrHelper.isNativeLibraryLoaded()) {
             logger.info("Shutting down Oculus SDK...");
             TeraOVR.clear();
         }
@@ -205,7 +205,7 @@ public class StateIngame implements GameState {
         display.prepareToRender();
 
         if (worldRenderer != null) {
-            if (!context.get(Config.class).getRendering().isOculusVrSupport()) {
+            if (!context.get(Config.class).getRendering().isVrSupport()) {
                 worldRenderer.render(RenderingStage.MONO);
             } else {
                 worldRenderer.render(RenderingStage.LEFT_EYE);
