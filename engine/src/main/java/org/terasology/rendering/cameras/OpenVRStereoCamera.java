@@ -28,7 +28,7 @@ import static org.lwjgl.opengl.GL11.GL_PROJECTION;
 import static org.lwjgl.opengl.GL11.glMatrixMode;
 
 /**
- * Camera which can be used to render stereoscopic images of the scene for the Oculus Rift.
+ * Camera which can be used to render stereoscopic images of the scene for VR.
  *
  */
 public class OpenVRStereoCamera extends Camera {

@@ -54,7 +54,7 @@ public class RenderingConfig extends AbstractSubscribable {
     public static final String LIGHT_SHAFTS = "LightShafts";
     public static final String EYE_ADAPTATION = "EyeAdaptation";
     public static final String BLOOM = "Bloom";
-    public static final String VR_SUPPORT = "OculusVrSupport";
+    public static final String VR_SUPPORT = "VrSupport";
     public static final String MAX_TEXTURE_ATLAS_RESOLUTION = "MaxTextureAtlasResolution";
     public static final String MAX_CHUNKS_USED_FOR_SHADOW_MAPPING = "MaxChunksUsedForShadowMapping";
     public static final String SHADOW_MAP_RESOLUTION = "ShadowMapResolution";
@@ -401,7 +401,7 @@ public class RenderingConfig extends AbstractSubscribable {
         return vrSupport;
     }
 
-    public void setOculusVrSupport(boolean vrSupport) {
+    public void setVrSupport(boolean vrSupport) {
         boolean oldValue = this.vrSupport;
         this.vrSupport = vrSupport;
         propertyChangeSupport.firePropertyChange(VR_SUPPORT, oldValue, this.vrSupport);
