@@ -30,7 +30,7 @@ public class OpenVRState {
     private static Matrix4f[] controllerPose = new Matrix4f[2];
     private static VRControllerState_t[] lastControllerState = new VRControllerState_t[2];
 
-    OpenVRState() {
+    public OpenVRState() {
         for (int c = 0; c < 2; c++) {
             lastControllerState[c] = new VRControllerState_t();
             controllerPose[c] = new Matrix4f(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);

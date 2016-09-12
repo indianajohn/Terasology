@@ -5,6 +5,8 @@ import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import jopenvr.*;
 import jopenvr.JOpenVRLibrary.EVREventType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.IntBuffer;
 
@@ -17,6 +19,7 @@ import static org.terasology.rendering.openvrprovider.ControllerListener.RIGHT_C
   * */
 public class OpenVRProvider {
     private static boolean initialized = false;
+    private static final Logger logger = LoggerFactory.getLogger(OpenVRProvider.class);
     private static VR_IVRSystem_FnTable vrsystem;
     private static VR_IVRCompositor_FnTable vrCompositor;
     private static VR_IVROverlay_FnTable vrOverlay;
@@ -80,13 +83,13 @@ public class OpenVRProvider {
     private boolean initializeOpenVRLibrary() throws Exception {
         if (initialized)
             return true;
-        System.out.println("Adding OpenVR search path: " + OSValidator.getLibPath());
+        logger.info("Adding OpenVR search path: " + OSValidator.getLibPath());
         NativeLibrary.addSearchPath("openvr_api", OSValidator.getLibPath());
 
         if (jopenvr.JOpenVRLibrary.VR_IsHmdPresent() == 1) {
-            System.out.println("VR Headset detected.");
+            logger.info("VR Headset detected.");
         } else {
-            System.out.println("VR Headset not detected.");
+            logger.info("VR Headset not detected.");
             return false;
         }
         return true;
@@ -119,7 +122,7 @@ public class OpenVRProvider {
             vrsystem.setAutoSynch(false);
             vrsystem.read();
 
-            System.out.println("OpenVR initialized & VR connected.");
+            logger.info("OpenVR initialized & VR connected.");
 
             hmdTrackedDevicePoseReference = new TrackedDevicePose_t.ByReference();
             hmdTrackedDevicePoses = (TrackedDevicePose_t[]) hmdTrackedDevicePoseReference.toArray(JOpenVRLibrary.k_unMaxTrackedDeviceCount);
@@ -142,7 +145,7 @@ public class OpenVRProvider {
         if (hmdErrorStore.get(0) == 0) {
             vrOverlay.setAutoSynch(false);
             vrOverlay.read();
-            System.out.println("OpenVR Overlay initialized OK");
+            logger.info("OpenVR Overlay initialized OK.");
         } else {
             throw new Exception(jopenvr.JOpenVRLibrary.VR_GetVRInitErrorAsEnglishDescription(hmdErrorStore.get(0)).getString(0));
         }
@@ -153,7 +156,7 @@ public class OpenVRProvider {
         if (hmdErrorStore.get(0) == 0) {
             vrSettings.setAutoSynch(false);
             vrSettings.read();
-            System.out.println("OpenVR Settings initialized OK");
+            logger.info("OpenVR Settings initialized OK.");
         } else {
             throw new Exception(jopenvr.JOpenVRLibrary.VR_GetVRInitErrorAsEnglishDescription(hmdErrorStore.get(0)).getString(0));
         }
@@ -163,7 +166,7 @@ public class OpenVRProvider {
         if (set && vrsystem != null) {
             vrCompositor = new VR_IVRCompositor_FnTable(JOpenVRLibrary.VR_GetGenericInterface(JOpenVRLibrary.IVRCompositor_Version, hmdErrorStore));
             if (hmdErrorStore.get(0) == 0) {
-                System.out.println("OpenVR Compositor initialized OK.");
+                logger.info("OpenVR Compositor initialized OK.");
                 vrCompositor.setAutoSynch(false);
                 vrCompositor.read();
                 vrCompositor.SetTrackingSpace.apply(JOpenVRLibrary.ETrackingUniverseOrigin.ETrackingUniverseOrigin_TrackingUniverseStanding);
@@ -172,7 +175,7 @@ public class OpenVRProvider {
             }
         }
         if (vrCompositor == null) {
-            System.out.println("Skipping VR Compositor...");
+            logger.info("Skipping VR Compositor...");
         }
 
         // left eye
@@ -195,7 +198,7 @@ public class OpenVRProvider {
             texType[0].write();
 
         }
-        System.out.println("OpenVR Compositor initialized OK.");
+        logger.info("OpenVR Compositor initialized OK.");
 
     }
 
@@ -213,7 +216,7 @@ public class OpenVRProvider {
 
 
             if (ret != 0) {
-                System.out.println("VR Overlay Error: " + vrOverlay.GetOverlayErrorNameFromEnum.apply(ret).getString(0));
+                logger.error("VR Overlay Error: " + vrOverlay.GetOverlayErrorNameFromEnum.apply(ret).getString(0));
             }
 
         } else {

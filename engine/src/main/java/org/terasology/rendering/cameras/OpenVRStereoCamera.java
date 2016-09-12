@@ -15,6 +15,8 @@
  */
 package org.terasology.rendering.cameras;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.rendering.openvrprovider.OpenVRProvider;
 import org.lwjgl.opengl.GL11;
 import org.terasology.math.MatrixUtils;
@@ -32,7 +34,7 @@ import static org.lwjgl.opengl.GL11.glMatrixMode;
  *
  */
 public class OpenVRStereoCamera extends Camera {
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OpenVRStereoCamera.class);
+    private static final Logger logger = LoggerFactory.getLogger(OpenVRStereoCamera.class);
 
     protected Matrix4f projTranslationLeftEye = new Matrix4f();
     protected Matrix4f projTranslationRightEye = new Matrix4f();

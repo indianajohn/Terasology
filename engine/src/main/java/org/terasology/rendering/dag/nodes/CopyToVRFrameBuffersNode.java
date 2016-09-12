@@ -79,8 +79,6 @@ public class CopyToVRFrameBuffersNode extends AbstractNode {
         addDesiredStateChange(new BindFBO(FINAL));
     }
 
-    /**
-     */
     @Override
     public void process() {
         PerformanceMonitor.startActivity("rendering/copyToVRFrameBuffers");
