@@ -136,7 +136,7 @@ public final class WorldRendererImpl implements WorldRenderer {
     private DisplayResolutionDependentFBOs displayResolutionDependentFBOs;
     private ShadowMapResolutionDependentFBOs shadowMapResolutionDependentFBOs;
     private ImmutableFBOs immutableFBOs;
-    private OpenVRProvider vrProvider = null;
+    private OpenVRProvider vrProvider;
 
     /**
      * Instantiates a WorldRenderer implementation.
@@ -260,7 +260,7 @@ public final class WorldRendererImpl implements WorldRenderer {
         renderGraph.addNode(blurPassesNode, "blurPassesNode");
         if (renderingConfig.isVrSupport()) {
             Node copyToVRFrameBufferNode = nodeFactory.createInstance(CopyToVRFrameBuffersNode.class);
-            ((CopyToVRFrameBuffersNode)copyToVRFrameBufferNode).setOpenVRProvider(this.vrProvider);
+            ((CopyToVRFrameBuffersNode) copyToVRFrameBufferNode).setOpenVRProvider(this.vrProvider);
             renderGraph.addNode(copyToVRFrameBufferNode, "copyToVRFrameBufferNode");
         }
         renderGraph.addNode(finalPostProcessingNode, "finalPostProcessingNode");
@@ -356,7 +356,7 @@ public final class WorldRendererImpl implements WorldRenderer {
      * to provide statistics regarding the ongoing rendering and its individual steps (i.e. rendering shadows,
      * reflections, 2D filters...).
      *
-     * @param renderingStage "MONO" for standard rendering and "LEFT_EYE" or "RIGHT_EYE" for stereoscopic displays.
+     * @param renderingStage "MONO" for standard rendering and "leftEye" or "rightEye" for stereoscopic displays.
      */
     @Override
     public void render(RenderingStage renderingStage) {

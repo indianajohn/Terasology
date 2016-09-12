@@ -3,8 +3,18 @@ package org.terasology.rendering.openvrprovider;
 import com.sun.jna.Memory;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
-import jopenvr.*;
+import jopenvr.HmdMatrix34_t;
+import jopenvr.HmdMatrix44_t;
+import jopenvr.JOpenVRLibrary;
 import jopenvr.JOpenVRLibrary.EVREventType;
+import jopenvr.Texture_t;
+import jopenvr.TrackedDevicePose_t;
+import jopenvr.VRControllerState_t;
+import jopenvr.VRTextureBounds_t;
+import jopenvr.VR_IVRCompositor_FnTable;
+import jopenvr.VR_IVROverlay_FnTable;
+import jopenvr.VR_IVRSettings_FnTable;
+import jopenvr.VR_IVRSystem_FnTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,33 +28,50 @@ import static org.terasology.rendering.openvrprovider.ControllerListener.RIGHT_C
  * or OpenVRState
   * */
 public class OpenVRProvider {
-    private static boolean initialized = false;
+    private static boolean initialized;
     private static final Logger logger = LoggerFactory.getLogger(OpenVRProvider.class);
     private static VR_IVRSystem_FnTable vrsystem;
     private static VR_IVRCompositor_FnTable vrCompositor;
     private static VR_IVROverlay_FnTable vrOverlay;
     private static VR_IVRSettings_FnTable vrSettings;
-    public OpenVRState vrState = new OpenVRState();
     private static int[] controllerDeviceIndex = new int[2];
     private static VRControllerState_t.ByReference[] inputStateRefernceArray = new VRControllerState_t.ByReference[2];
     private static VRControllerState_t[] controllerStateReference = new VRControllerState_t[2];
     private static IntBuffer hmdErrorStore;
     private static TrackedDevicePose_t.ByReference hmdTrackedDevicePoseReference;
     private static TrackedDevicePose_t[] hmdTrackedDevicePoses;
-    // TextureIDs of framebuffers for each eye
-    private float nearClip = 0.5f;
-    private float farClip = 500.0f;
-    private final static VRTextureBounds_t texBounds = new VRTextureBounds_t();
-    public static Texture_t texType[] = new Texture_t[2];
     private static boolean[] controllerTracking = new boolean[2];
     //keyboard
-    private static boolean keyboardShowing = false;
-    private static boolean headIsTracking = false;
+    private static boolean keyboardShowing;
+    private static boolean headIsTracking;
+
+
+    // TextureIDs of framebuffers for each eye
+    private final VRTextureBounds_t texBounds = new VRTextureBounds_t();
+    private float nearClip = 0.5f;
+    private float farClip = 500.0f;
+
+    public static Texture_t texType[] = new Texture_t[2];
+
+    public OpenVRState vrState = new OpenVRState();
+
+    public OpenVRProvider() {
+        for (int c = 0; c < 2; c++) {
+            controllerDeviceIndex[c] = -1;
+            controllerStateReference[c] = new VRControllerState_t();
+            inputStateRefernceArray[c] = new VRControllerState_t.ByReference();
+            inputStateRefernceArray[c].setAutoRead(false);
+            inputStateRefernceArray[c].setAutoWrite(false);
+            inputStateRefernceArray[c].setAutoSynch(false);
+            texType[c] = new Texture_t();
+        }
+    }
 
     public boolean init() {
         try {
-            if (!initializeOpenVRLibrary())
+            if (!initializeOpenVRLibrary()) {
                 return false;
+            }
             initializeJOpenVR();
             initOpenVRCompositor(true);
             initOpenVROverlay();
@@ -60,10 +87,10 @@ public class OpenVRProvider {
         initialized = false;
     }
 
-    public void updateState()
-    {
-        if (!initialized)
+    public void updateState() {
+        if (!initialized) {
             init();
+        }
         updatePose();
         pollControllers();
         pollInputEvents();
@@ -81,8 +108,9 @@ public class OpenVRProvider {
     }
 
     private boolean initializeOpenVRLibrary() throws Exception {
-        if (initialized)
+        if (initialized) {
             return true;
+        }
         logger.info("Adding OpenVR search path: " + OSValidator.getLibPath());
         NativeLibrary.addSearchPath("openvr_api", OSValidator.getLibPath());
 
@@ -93,18 +121,6 @@ public class OpenVRProvider {
             return false;
         }
         return true;
-    }
-
-    public OpenVRProvider() {
-        for (int c = 0; c < 2; c++) {
-            controllerDeviceIndex[c] = -1;
-            controllerStateReference[c] = new VRControllerState_t();
-            inputStateRefernceArray[c] = new VRControllerState_t.ByReference();
-            inputStateRefernceArray[c].setAutoRead(false);
-            inputStateRefernceArray[c].setAutoWrite(false);
-            inputStateRefernceArray[c].setAutoSynch(false);
-            texType[c] = new Texture_t();
-        }
     }
 
     private static void initializeJOpenVR() throws Exception {
@@ -162,7 +178,7 @@ public class OpenVRProvider {
         }
     }
 
-    private static void initOpenVRCompositor(boolean set) throws Exception {
+    private void initOpenVRCompositor(boolean set) throws Exception {
         if (set && vrsystem != null) {
             vrCompositor = new VR_IVRCompositor_FnTable(JOpenVRLibrary.VR_GetGenericInterface(JOpenVRLibrary.IVRCompositor_Version, hmdErrorStore));
             if (hmdErrorStore.get(0) == 0) {
@@ -203,7 +219,7 @@ public class OpenVRProvider {
     }
 
     public static boolean setKeyboardOverlayShowing(boolean showingState) {
-        int ret = 1;
+        int ret;
         if (showingState) {
             Pointer pointer = new Memory(3);
             pointer.setString(0, "mc");
@@ -223,6 +239,7 @@ public class OpenVRProvider {
             try {
                 vrOverlay.HideKeyboard.apply();
             } catch (Error e) {
+                logger.error("Error bringing up keyboard over.ay.");
             }
             keyboardShowing = false;
         }
@@ -231,9 +248,9 @@ public class OpenVRProvider {
     }
 
     public void destroy() {
-        if (this.initialized) {
+        if (initialized) {
             JOpenVRLibrary.VR_ShutdownInternal();
-            this.initialized = false;
+            initialized = false;
         }
     }
 
@@ -241,13 +258,19 @@ public class OpenVRProvider {
         controllerDeviceIndex[RIGHT_CONTROLLER] = -1;
         controllerDeviceIndex[LEFT_CONTROLLER] = -1;
 
-        controllerDeviceIndex[RIGHT_CONTROLLER] = vrsystem.GetTrackedDeviceIndexForControllerRole.apply(JOpenVRLibrary.ETrackedControllerRole.ETrackedControllerRole_TrackedControllerRole_LeftHand);
-        controllerDeviceIndex[LEFT_CONTROLLER] = vrsystem.GetTrackedDeviceIndexForControllerRole.apply(JOpenVRLibrary.ETrackedControllerRole.ETrackedControllerRole_TrackedControllerRole_RightHand);
+        controllerDeviceIndex[RIGHT_CONTROLLER] =
+                vrsystem.GetTrackedDeviceIndexForControllerRole.apply(
+                        JOpenVRLibrary.ETrackedControllerRole.ETrackedControllerRole_TrackedControllerRole_LeftHand);
+        controllerDeviceIndex[LEFT_CONTROLLER] =
+                vrsystem.GetTrackedDeviceIndexForControllerRole.apply(
+                        JOpenVRLibrary.ETrackedControllerRole.ETrackedControllerRole_TrackedControllerRole_RightHand);
     }
 
     //jrbuda:: oh hello there you are.
     private static void pollInputEvents() {
-        if (vrsystem == null) return;
+        if (vrsystem == null) {
+            return;
+        }
 
         jopenvr.VREvent_t event = new jopenvr.VREvent_t();
 
@@ -259,11 +282,16 @@ public class OpenVRProvider {
                     keyboardShowing = false;
                     break;
                 case EVREventType.EVREventType_VREvent_KeyboardCharInput:
+                    // Might want to use this at some point
+                    /*
                     byte[] inbytes = event.data.getPointer().getByteArray(0, 8);
                     int len = 0;
                     for (byte b : inbytes) {
-                        if (b > 0) len++;
+                        if (b > 0) {
+                            len++;
+                        }
                     }
+                    */
                     break;
                 default:
                     break;
@@ -272,8 +300,9 @@ public class OpenVRProvider {
     }
 
     private void updatePose() {
-        if (vrsystem == null || vrCompositor == null)
+        if (vrsystem == null || vrCompositor == null) {
             return;
+        }
 
         vrCompositor.WaitGetPoses.apply(hmdTrackedDevicePoseReference, JOpenVRLibrary.k_unMaxTrackedDeviceCount, null, 0);
         for (int nDevice = 0; nDevice < JOpenVRLibrary.k_unMaxTrackedDeviceCount; ++nDevice) {
@@ -284,7 +313,11 @@ public class OpenVRProvider {
             for (int nEye = 0; nEye < 2; nEye++) {
                 HmdMatrix34_t matPose = vrsystem.GetEyeToHeadTransform.apply(nEye);
                 vrState.setEyePoseWRTHead(matPose, nEye);
-                HmdMatrix44_t matProjection = vrsystem.GetProjectionMatrix.apply(nEye, nearClip, farClip, JOpenVRLibrary.EGraphicsAPIConvention.EGraphicsAPIConvention_API_OpenGL);
+                HmdMatrix44_t matProjection =
+                        vrsystem.GetProjectionMatrix.apply(nEye,
+                                nearClip,
+                                farClip,
+                                JOpenVRLibrary.EGraphicsAPIConvention.EGraphicsAPIConvention_API_OpenGL);
                 vrState.setProjectionMatrix(matProjection, nEye);
             }
             vrState.setHeadPose(hmdTrackedDevicePoses[JOpenVRLibrary.k_unTrackedDeviceIndex_Hmd].mDeviceToAbsoluteTracking);
@@ -306,30 +339,36 @@ public class OpenVRProvider {
     }
 
     public static void triggerHapticPulse(int controller, int strength) {
-        if (controllerDeviceIndex[controller] == -1)
+        if (controllerDeviceIndex[controller] == -1) {
             return;
+        }
         vrsystem.TriggerHapticPulse.apply(controllerDeviceIndex[controller], 0, (short) strength);
     }
 
     public void submitFrame() {
-        if (vrCompositor == null) return;
-        if (vrCompositor.Submit == null) return;
+        if (vrCompositor == null) {
+            return;
+        }
+        if (vrCompositor.Submit == null) {
+            return;
+        }
         for (int nEye = 0; nEye < 2; nEye++) {
-            int ret = vrCompositor.Submit.apply(
+            vrCompositor.Submit.apply(
                     nEye,
                     texType[nEye], null,
                     JOpenVRLibrary.EVRSubmitFlags.EVRSubmitFlags_Submit_Default);
         }
-        if (vrCompositor.PostPresentHandoff != null)
+        if (vrCompositor.PostPresentHandoff != null) {
             vrCompositor.PostPresentHandoff.apply();
+        }
     }
 
-    public void setNearClip(float _nearClip) {
-        nearClip = _nearClip;
+    public void setNearClip(float nearClipIn) {
+        nearClip = nearClipIn;
     }
 
-    public void setFarClip(float _farClip) {
-        farClip = _farClip;
+    public void setFarClip(float farClipIn) {
+        farClip = farClipIn;
     }
 
 }
