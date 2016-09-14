@@ -328,7 +328,7 @@ public class RenderingConfig extends AbstractSubscribable {
     }
 
     public boolean isMotionBlur() {
-        return motionBlur && !isVrSupport();
+        return motionBlur;
     }
 
     public void setMotionBlur(boolean motionBlur) {
