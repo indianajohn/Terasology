@@ -15,13 +15,11 @@
  */
 package org.terasology.rendering.dag.nodes;
 
-import org.lwjgl.opengl.GL11;
 import org.terasology.assets.ResourceUrn;
-import org.terasology.rendering.dag.ConditionDependentNode;
+import org.terasology.rendering.dag.AbstractNode;
 import org.terasology.config.Config;
 import org.terasology.monitoring.PerformanceMonitor;
 import org.terasology.registry.In;
-import org.terasology.rendering.assets.material.Material;
 import static org.lwjgl.opengl.GL11.*;
 
 import org.terasology.rendering.dag.stateChanges.BindFBO;
@@ -33,7 +31,7 @@ import static org.terasology.rendering.opengl.DefaultDynamicFBOs.FINAL;
 import static org.terasology.rendering.world.WorldRenderer.RenderingStage.LEFT_EYE;
 import static org.terasology.rendering.world.WorldRenderer.RenderingStage.MONO;
 
-public class CopyImageToScreenNode extends ConditionDependentNode {
+public class CopyImageToScreenNode extends AbstractNode {
 
     @In
     private WorldRenderer worldRenderer;
