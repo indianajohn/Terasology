@@ -236,8 +236,8 @@ public final class WorldRendererImpl implements WorldRenderer {
         Node bloomPassesNode = nodeFactory.createInstance(BloomPassesNode.class);
         Node blurPassesNode = nodeFactory.createInstance(BlurPassesNode.class);
         Node finalPostProcessingNode = nodeFactory.createInstance(FinalPostProcessingNode.class);
-        Node copyImageToScreenNode = nodeFactory.createInstance(CopyImageToScreenNode.class);
         Node copyToVRFrameBufferNode = nodeFactory.createInstance(CopyImageToHMDNode.class);
+        Node copyImageToScreenNode = nodeFactory.createInstance(CopyImageToScreenNode.class);
 
         RenderGraph renderGraph = new RenderGraph();
         renderGraph.addNode(shadowMapNode, "shadowMapNode");
@@ -264,8 +264,8 @@ public final class WorldRendererImpl implements WorldRenderer {
         renderGraph.addNode(bloomPassesNode, "bloomPassesNode");
         renderGraph.addNode(blurPassesNode, "blurPassesNode");
         renderGraph.addNode(finalPostProcessingNode, "finalPostProcessingNode");
-        renderGraph.addNode(copyImageToScreenNode, "copyImageToScreenNode");
         renderGraph.addNode(copyToVRFrameBufferNode, "copyToVRFrameBufferNode");
+        renderGraph.addNode(copyImageToScreenNode, "copyImageToScreenNode");
 
         RenderTaskListGenerator renderTaskListGenerator = new RenderTaskListGenerator();
         List<Node> orderedNodes = renderGraph.getNodesInTopologicalOrder();
