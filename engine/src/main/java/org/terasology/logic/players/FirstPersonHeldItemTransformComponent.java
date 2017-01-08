@@ -15,11 +15,23 @@
  */
 package org.terasology.logic.players;
 
+import jopenvr.VRControllerState_t;
+import org.joml.Matrix4f;
 import org.terasology.entitySystem.Component;
 import org.terasology.math.geom.Vector3f;
+import org.terasology.rendering.openvrprovider.ControllerListener;
 
-public class FirstPersonHeldItemTransformComponent implements Component {
+public class FirstPersonHeldItemTransformComponent implements Component, ControllerListener {
     public Vector3f rotateDegrees = Vector3f.zero();
     public Vector3f translate = Vector3f.zero();
     public float scale = 1f;
+
+    public void buttonStateChanged(VRControllerState_t stateBefore, VRControllerState_t stateAfter, int nController)
+    {
+        // nothing for now
+    }
+    public void poseChanged(Matrix4f pose)
+    {
+
+    }
 }
