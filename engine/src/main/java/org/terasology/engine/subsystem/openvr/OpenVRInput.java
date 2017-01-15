@@ -19,6 +19,8 @@ import org.terasology.context.Context;
 import org.terasology.engine.modes.GameState;
 import org.terasology.engine.subsystem.EngineSubsystem;
 import org.terasology.input.InputSystem;
+import org.terasology.input.lwjgl.LwjglKeyboardDevice;
+import org.terasology.input.lwjgl.LwjglMouseDevice;
 import org.terasology.rendering.openvrprovider.OpenVRProvider;
 
 public class OpenVRInput implements EngineSubsystem {
@@ -45,8 +47,13 @@ public class OpenVRInput implements EngineSubsystem {
     @Override
     public void postInitialise(Context rootContext) {
         this.context = rootContext;
-        InputSystem inputSystem = new InputSystem();
-        context.put(InputSystem.class, inputSystem);
+        InputSystem inputSystem = context.get(InputSystem.class);
+        if (inputSystem == null) {
+            inputSystem = new InputSystem();
+            inputSystem.setMouseDevice(new LwjglMouseDevice());
+            inputSystem.setKeyboardDevice(new LwjglKeyboardDevice());
+            context.put(InputSystem.class, inputSystem);
+        }
 
         OpenVRControllers controllerDevice = new OpenVRControllers();
         vrProvider.vrState.addControllerListener(controllerDevice);
