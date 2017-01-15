@@ -32,7 +32,7 @@ import java.util.Queue;
 
 public class OpenVRControllers implements ControllerDevice, ControllerListener {
 
-    Queue<ControllerAction> queuedActions = new ArrayDeque<>();
+    private Queue<ControllerAction> queuedActions = new ArrayDeque<>();
 
     @Override
     public List<String> getControllers() {
@@ -61,7 +61,18 @@ public class OpenVRControllers implements ControllerDevice, ControllerListener {
             queuedActions.add(new ControllerAction(InputType.CONTROLLER_BUTTON.getInput(ControllerId.ZERO),
                     "OpenVR", ButtonState.DOWN, 1.0f));
         }
-        // TODO: axes, other buttons
+        else if (OpenVRUtil.switchedDown(ControllerListener.BUTTON_TOUCHPAD, stateBefore.ulButtonPressed, stateAfter.ulButtonPressed)) {
+            queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.X_AXIS),
+                    "OpenVR", ButtonState.DOWN, stateAfter.rAxis[0].x));
+            queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.Y_AXIS),
+                    "OpenVR", ButtonState.DOWN, -stateAfter.rAxis[0].y));
+        }
+        else if (OpenVRUtil.switchedUp(ControllerListener.BUTTON_TOUCHPAD, stateBefore.ulButtonPressed, stateAfter.ulButtonPressed)) {
+            queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.X_AXIS),
+                    "OpenVR", ButtonState.UP, 0));
+            queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.Y_AXIS),
+                    "OpenVR", ButtonState.UP, 0));
+        }
     }
 
     @Override
