@@ -63,9 +63,9 @@ public class OpenVRControllers implements ControllerDevice, ControllerListener {
         }
         else if (OpenVRUtil.switchedDown(ControllerListener.BUTTON_TOUCHPAD, stateBefore.ulButtonPressed, stateAfter.ulButtonPressed)) {
             queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.X_AXIS),
-                    "OpenVR", ButtonState.DOWN, stateAfter.rAxis[0].x));
+                    "OpenVR", ButtonState.DOWN, -stateAfter.rAxis[0].x));
             queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.Y_AXIS),
-                    "OpenVR", ButtonState.DOWN, -stateAfter.rAxis[0].y));
+                    "OpenVR", ButtonState.DOWN, stateAfter.rAxis[0].y));
         }
         else if (OpenVRUtil.switchedUp(ControllerListener.BUTTON_TOUCHPAD, stateBefore.ulButtonPressed, stateAfter.ulButtonPressed)) {
             queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.X_AXIS),
