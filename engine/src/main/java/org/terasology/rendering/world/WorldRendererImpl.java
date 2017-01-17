@@ -168,6 +168,7 @@ public final class WorldRendererImpl implements WorldRenderer {
             context.put(OpenVRProvider.class, vrProvider);
             if (vrProvider.init()) {
                 playerCamera = new OpenVRStereoCamera(vrProvider);
+                vrProvider.vrState.setGroundPlaneAdjustmentFactor(-0.7f);
                 currentRenderingStage = RenderingStage.LEFT_EYE;
             } else {
                 playerCamera = new PerspectiveCamera(renderingConfig.getCameraSettings());

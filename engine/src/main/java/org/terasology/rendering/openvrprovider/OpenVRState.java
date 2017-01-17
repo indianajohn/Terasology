@@ -38,6 +38,7 @@ public class OpenVRState {
     // In the head frame
     private Matrix4f[] eyePoses = new Matrix4f[2];
     private Matrix4f[] projectionMatrices = new Matrix4f[2];
+    private float groundPlaneAdjustmentFactor = 0.0f;
 
     // In the tracking system intertial frame
     private Matrix4f headPose = OpenVRUtil.createIdentityMatrix4f();
@@ -61,6 +62,7 @@ public class OpenVRState {
 
     void setHeadPose(HmdMatrix34_t inputPose) {
         OpenVRUtil.setSteamVRMatrix3ToMatrix4f(inputPose, headPose);
+        headPose.m31(headPose.m31() + groundPlaneAdjustmentFactor);
     }
 
     void setEyePoseWRTHead(HmdMatrix34_t inputPose, int nIndex) {
@@ -69,6 +71,7 @@ public class OpenVRState {
 
     void setControllerPose(HmdMatrix34_t inputPose, int nIndex) {
         OpenVRUtil.setSteamVRMatrix3ToMatrix4f(inputPose, controllerPose[nIndex]);
+        controllerPose[nIndex].m31(controllerPose[nIndex].m31() + groundPlaneAdjustmentFactor);
         for (ControllerListener listener : controllerListeners) {
             listener.poseChanged(controllerPose[nIndex], nIndex);
         }
@@ -106,6 +109,10 @@ public class OpenVRState {
                 }
             }
         }
+    }
+
+    public void setGroundPlaneAdjustmentFactor(float inputFactor) {
+        groundPlaneAdjustmentFactor = inputFactor;
     }
 
     void setProjectionMatrix(
