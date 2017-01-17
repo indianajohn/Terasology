@@ -168,8 +168,8 @@ public class OpenVRControllers implements ControllerDevice, ControllerListener {
     }
 
     @Override
-    public void buttonStateChanged(VRControllerState_t stateBefore, VRControllerState_t stateAfter, int nController) {
-        if (nController == 0) {
+    public void buttonStateChanged(VRControllerState_t stateBefore, VRControllerState_t stateAfter, int handIndex) {
+        if (handIndex == 0) {
             handleController0(stateBefore,stateAfter);
         } else {
             handleController1(stateBefore,stateAfter);
