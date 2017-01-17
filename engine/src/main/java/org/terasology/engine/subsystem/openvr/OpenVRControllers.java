@@ -116,53 +116,37 @@ public class OpenVRControllers implements ControllerDevice, ControllerListener {
         else if (OpenVRUtil.switchedDown(ControllerListener.BUTTON_TOUCHPAD, stateBefore.ulButtonPressed, stateAfter.ulButtonPressed)) {
             if (stateAfter.rAxis[0].x < 0 && stateAfter.rAxis[0].y < 0) {
                 queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.SIX),
-                        "OpenVR", ButtonState.DOWN, -stateAfter.rAxis[0].x));
-                queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.SIX),
-                        "OpenVR", ButtonState.DOWN, stateAfter.rAxis[0].y));
+                        "OpenVR", ButtonState.DOWN, 1.0f));
             }
             if (stateAfter.rAxis[0].x > 0 && stateAfter.rAxis[0].y < 0) {
                 queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.SEVEN),
-                        "OpenVR", ButtonState.DOWN, -stateAfter.rAxis[0].x));
-                queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.SEVEN),
-                        "OpenVR", ButtonState.DOWN, stateAfter.rAxis[0].y));
+                        "OpenVR", ButtonState.DOWN, 1.0f));
             }
             if (stateAfter.rAxis[0].x < 0 && stateAfter.rAxis[0].y < 0) {
                 queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.EIGHT),
-                        "OpenVR", ButtonState.DOWN, -stateAfter.rAxis[0].x));
-                queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.EIGHT),
-                        "OpenVR", ButtonState.DOWN, stateAfter.rAxis[0].y));
+                        "OpenVR", ButtonState.DOWN, 1.0f));
             }
             if (stateAfter.rAxis[0].x > 0 && stateAfter.rAxis[0].y > 0) {
                 queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.NINE),
-                        "OpenVR", ButtonState.DOWN, -stateAfter.rAxis[0].x));
-                queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.NINE),
-                        "OpenVR", ButtonState.DOWN, stateAfter.rAxis[0].y));
+                        "OpenVR", ButtonState.DOWN, 1.0f));
             }
         }
         else if (OpenVRUtil.switchedUp(ControllerListener.BUTTON_TOUCHPAD, stateBefore.ulButtonPressed, stateAfter.ulButtonPressed)) {
             if (stateAfter.rAxis[0].x < 0 && stateAfter.rAxis[0].y < 0) {
                 queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.SIX),
-                        "OpenVR", ButtonState.UP, -stateAfter.rAxis[0].x));
-                queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.SIX),
-                        "OpenVR", ButtonState.UP, stateAfter.rAxis[0].y));
+                        "OpenVR", ButtonState.UP, 1.0f));
             }
             if (stateAfter.rAxis[0].x > 0 && stateAfter.rAxis[0].y < 0) {
                 queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.SEVEN),
-                        "OpenVR", ButtonState.UP, -stateAfter.rAxis[0].x));
-                queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.SEVEN),
-                        "OpenVR", ButtonState.UP, stateAfter.rAxis[0].y));
+                        "OpenVR", ButtonState.UP, 1.0f));
             }
             if (stateAfter.rAxis[0].x < 0 && stateAfter.rAxis[0].y < 0) {
                 queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.EIGHT),
-                        "OpenVR", ButtonState.UP, -stateAfter.rAxis[0].x));
-                queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.EIGHT),
-                        "OpenVR", ButtonState.UP, stateAfter.rAxis[0].y));
+                        "OpenVR", ButtonState.UP, 1.0f));
             }
             if (stateAfter.rAxis[0].x > 0 && stateAfter.rAxis[0].y > 0) {
                 queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.NINE),
-                        "OpenVR", ButtonState.UP, -stateAfter.rAxis[0].x));
-                queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.NINE),
-                        "OpenVR", ButtonState.UP, stateAfter.rAxis[0].y));
+                        "OpenVR", ButtonState.UP, 1.0f));
             }
         }
     }
