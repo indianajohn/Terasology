@@ -22,6 +22,6 @@ import org.terasology.input.*;
  */
 @RegisterBindButton(id = "toolbarNext", description = "${engine:menu#next-toolbar-item}", mode = ActivateMode.PRESS, category = "inventory")
 @DefaultBinding(type = InputType.MOUSE_WHEEL, id = 1)
-@DefaultBinding(type = InputType.CONTROLLER_BUTTON, id = ControllerId.SIX)
+@DefaultBinding(type = InputType.CONTROLLER_BUTTON, id = ControllerId.ONE)
 public class ToolbarNextButton extends BindButtonEvent {
 }
