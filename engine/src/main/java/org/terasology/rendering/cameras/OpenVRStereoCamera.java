@@ -293,9 +293,13 @@ public class OpenVRStereoCamera extends Camera {
         viewProjectionMatrixLeftEye = MatrixUtils.calcViewProjectionMatrix(viewMatrixLeftEye, projectionMatrixLeftEye);
         viewProjectionMatrixRightEye = MatrixUtils.calcViewProjectionMatrix(viewMatrixRightEye, projectionMatrixRightEye);
 
+        inverseViewProjectionMatrixLeftEye = new Matrix4f(viewProjectionMatrixLeftEye);
+        inverseViewProjectionMatrixRightEye = new Matrix4f(viewProjectionMatrixRightEye);
         inverseViewProjectionMatrixLeftEye.invert(viewProjectionMatrixLeftEye);
         inverseViewProjectionMatrixRightEye.invert(viewProjectionMatrixRightEye);
 
+        inverseProjectionMatrixLeftEye = new Matrix4f(projectionMatrixLeftEye);
+        inverseProjectionMatrixRightEye = new Matrix4f(projectionMatrixRightEye);
         inverseProjectionMatrixLeftEye.invert(projectionMatrixLeftEye);
         inverseProjectionMatrixRightEye.invert(projectionMatrixRightEye);
 
