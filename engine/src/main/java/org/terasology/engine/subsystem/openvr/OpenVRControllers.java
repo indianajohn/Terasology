@@ -61,6 +61,22 @@ public class OpenVRControllers implements ControllerDevice, ControllerListener {
             queuedActions.add(new ControllerAction(InputType.CONTROLLER_BUTTON.getInput(ControllerId.ZERO),
                     "OpenVR", ButtonState.DOWN, 1.0f));
         }
+        else if (OpenVRUtil.switchedUp(ControllerListener.BUTTON_GRIP, stateBefore.ulButtonPressed, stateAfter.ulButtonPressed)) {
+            queuedActions.add(new ControllerAction(InputType.CONTROLLER_BUTTON.getInput(ControllerId.ONE),
+                    "OpenVR", ButtonState.UP, 1.0f));
+        }
+        else if (OpenVRUtil.switchedDown(ControllerListener.BUTTON_GRIP, stateBefore.ulButtonPressed, stateAfter.ulButtonPressed)) {
+            queuedActions.add(new ControllerAction(InputType.CONTROLLER_BUTTON.getInput(ControllerId.ONE),
+                    "OpenVR", ButtonState.DOWN, 1.0f));
+        }
+        else if (OpenVRUtil.switchedUp(ControllerListener.BUTTON_APP_MENU, stateBefore.ulButtonPressed, stateAfter.ulButtonPressed)) {
+            queuedActions.add(new ControllerAction(InputType.CONTROLLER_BUTTON.getInput(ControllerId.TWO),
+                    "OpenVR", ButtonState.UP, 1.0f));
+        }
+        else if (OpenVRUtil.switchedDown(ControllerListener.BUTTON_APP_MENU, stateBefore.ulButtonPressed, stateAfter.ulButtonPressed)) {
+            queuedActions.add(new ControllerAction(InputType.CONTROLLER_BUTTON.getInput(ControllerId.TWO),
+                    "OpenVR", ButtonState.DOWN, 1.0f));
+        }
         else if (OpenVRUtil.switchedDown(ControllerListener.BUTTON_TOUCHPAD, stateBefore.ulButtonPressed, stateAfter.ulButtonPressed)) {
             queuedActions.add(new ControllerAction(InputType.CONTROLLER_AXIS.getInput(ControllerId.X_AXIS),
                     "OpenVR", ButtonState.DOWN, -stateAfter.rAxis[0].x));
