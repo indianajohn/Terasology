@@ -56,7 +56,7 @@ public class OpenVRInput implements EngineSubsystem {
         }
 
         OpenVRControllers controllerDevice = new OpenVRControllers();
-        vrProvider.vrState.addControllerListener(controllerDevice);
+        vrProvider.getState().addControllerListener(controllerDevice);
         inputSystem.setControllerDevice(controllerDevice);
     }
 
