@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 MovingBlocks
+ * Copyright 2017 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,9 +115,9 @@ public class ShaderManagerLwjgl implements ShaderManager {
         prepareAndStoreShaderProgramInstance("sobel", new ShaderParametersSobel());
         prepareAndStoreShaderProgramInstance("initialPost", new ShaderParametersInitialPost());
         prepareAndStoreShaderProgramInstance("prePostComposite", new ShaderParametersPrePostComposite());
-        prepareAndStoreShaderProgramInstance("highp", new ShaderParametersDefault());
+        prepareAndStoreShaderProgramInstance("highPass", new ShaderParametersDefault());
         prepareAndStoreShaderProgramInstance("blur", new ShaderParametersDefault());
-        prepareAndStoreShaderProgramInstance("down", new ShaderParametersDefault());
+        prepareAndStoreShaderProgramInstance("downSampler", new ShaderParametersDefault());
         prepareAndStoreShaderProgramInstance("toneMapping", new ShaderParametersToneMapping());
         prepareAndStoreShaderProgramInstance("sky", new ShaderParametersSky());
         prepareAndStoreShaderProgramInstance("chunk", new ShaderParametersChunk());
