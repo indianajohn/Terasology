@@ -358,8 +358,8 @@ public final class WorldRendererImpl implements WorldRenderer {
 
         // END OF THE SECOND REFACTORING PASS TO SWITCH NODES TO THE NEW ARCHITECTURE - each PR moves this line down.
 
-        Node copyToVRFrameBufferNode = nodeFactory.createInstance(CopyImageToHMDNode.class);
-        renderGraph.addNode(copyToVRFrameBufferNode, "copyToVRFrameBufferNode");
+        Node copyImageToHMDNode = nodeFactory.createInstance(CopyImageToHMDNode.class);
+        renderGraph.addNode(copyImageToHMDNode, "copyImageToHMDNode");
 
         Node copyImageToScreenNode = nodeFactory.createInstance(CopyImageToScreenNode.class);
         renderGraph.addNode(copyImageToScreenNode, "copyImageToScreenNode");
