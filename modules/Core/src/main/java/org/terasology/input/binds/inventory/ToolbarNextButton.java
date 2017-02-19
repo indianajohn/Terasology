@@ -16,7 +16,12 @@
 
 package org.terasology.input.binds.inventory;
 
-import org.terasology.input.*;
+import org.terasology.input.ActivateMode;
+import org.terasology.input.BindButtonEvent;
+import org.terasology.input.DefaultBinding;
+import org.terasology.input.InputType;
+import org.terasology.input.RegisterBindButton;
+import org.terasology.input.ControllerId;
 
 /**
  */

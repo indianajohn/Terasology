@@ -274,7 +274,7 @@ public class CharacterSystem extends BaseComponentSystem implements UpdateSubscr
             }
             EntityRef hitEntity = result.getEntity();
             if (!hitEntity.equals(event.getTarget())) {
-                /*
+                /**
                  * Tip for debugging this issue: Obtain the network id of hit entity and search it in both client and
                  * server entity dump. When certain fields don't get replicated, then wrong entity might get hin in the
                  * hit test.
