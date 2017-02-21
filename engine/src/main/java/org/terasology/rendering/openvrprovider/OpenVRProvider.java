@@ -18,6 +18,7 @@ package org.terasology.rendering.openvrprovider;
 import com.sun.jna.Memory;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
+import com.sun.jna.ptr.LongByReference;
 import jopenvr.HmdMatrix34_t;
 import jopenvr.HmdMatrix44_t;
 import jopenvr.JOpenVRLibrary;
@@ -47,6 +48,9 @@ import static org.terasology.rendering.openvrprovider.ControllerListener.RIGHT_C
 public final class OpenVRProvider {
     public static Texture_t[] texType = new Texture_t[2];
 
+    private static Texture_t overlayTexture = new Texture_t();
+    private static LongByReference overlayHandle = new LongByReference();
+    private static LongByReference overlayThumbnailHandle = new LongByReference();
     private static boolean initialized;
     private static final Logger logger = LoggerFactory.getLogger(OpenVRProvider.class);
     private static VR_IVRSystem_FnTable vrSystem;
@@ -144,6 +148,10 @@ public final class OpenVRProvider {
             logger.warn("VROverlay initialization failed.");
             return false;
         }
+        if (!initDashboardOverlay()) {
+            logger.warn("Dashboard overlay initialization failed.");
+            return false;
+        }
         if (!initOpenVROSettings()) {
             logger.warn("OpenVR settings initialization failed.");
             return false;
@@ -177,7 +185,7 @@ public final class OpenVRProvider {
      * @param controllerIndex - 0 for left, 1 for right, an integer.
      * @return true if the pose of the controller is currently considered reliable.
      */
-    public boolean isControllerTrackint(int controllerIndex) {
+    public boolean isControllerTracking(int controllerIndex) {
         return controllerTracking[controllerIndex];
     }
 
@@ -213,6 +221,27 @@ public final class OpenVRProvider {
             return;
         }
         vrSystem.TriggerHapticPulse.apply(controllerDeviceIndex[controller], 0, (short) strength);
+    }
+
+    /**
+     * Turns on/off the OpenVR overlay
+     */
+    public static void setDashboardShowing() {
+        Pointer pointer = new Memory(3);
+        pointer.setString(0, "mc");
+        vrOverlay.ShowDashboard.apply(pointer);
+    }
+
+    /**
+     * Set the texture for the overlay.
+     * @param textureIndex = the OpenGL texture handle for the overlay
+     */
+    public static void setDashboardTexture(int textureIndex) {
+        overlayTexture.handle = textureIndex;
+        overlayTexture.write();
+        //vrOverlay.SetOverlayTexture.apply(overlayHandle.getValue(),overlayTexture);
+        vrOverlay.SetOverlayTexture.apply(overlayHandle.getValue(),texType[0]);
+
     }
 
     /**
@@ -473,5 +502,44 @@ public final class OpenVRProvider {
                 controllerTracking[handIndex] = false;
             }
         }
+    }
+    private static boolean initDashboardOverlay() {
+        /*
+        std::string sKey = std::string( "sample." ) + m_strName.toStdString();
+        vr::VROverlayError overlayError = vr::VROverlay()->CreateDashboardOverlay( sKey.c_str(), m_strName.toStdString().c_str(), &m_ulOverlayHandle, &m_ulOverlayThumbnailHandle );
+		bSuccess = bSuccess && overlayError == vr::VROverlayError_None;
+            Pointer pointer = new Memory(3);
+            pointer.setString(0, "mc");
+            Pointer empty = new Memory(1);
+            empty.setString(0, "");
+            ret = vrOverlay.ShowKeyboard.apply(0, 0, pointer, 256, empty, (byte) 1, 0);
+            keyboardShowing = 0 == ret; //0 = no error, > 0 see EVROverlayError
+            if (ret != 0) {
+                logger.error("VR Overlay Error: " + vrOverlay.GetOverlayErrorNameFromEnum.apply(ret).getString(0));
+            }
+            VROverlay()->SetOverlayWidthInMeters( m_ulOverlayHandle, 1.5f );
+            vr::VROverlay()->SetOverlayInputMethod( m_ulOverlayHandle, vr::VROverlayInputMethod_Mouse );
+	}
+         */
+        overlayTexture.eType = JOpenVRLibrary.EGraphicsAPIConvention.EGraphicsAPIConvention_API_OpenGL;
+        overlayTexture.eColorSpace = JOpenVRLibrary.EColorSpace.EColorSpace_ColorSpace_Auto;
+        overlayTexture.setAutoSynch(false);
+        overlayTexture.setAutoRead(false);
+        overlayTexture.setAutoWrite(false);
+        overlayTexture.handle = 0;
+        overlayTexture.write();
+        Pointer pointer = new Memory(3);
+        pointer.setString(0, "mc");
+        Pointer empty = new Memory(1);
+        int ret = vrOverlay.CreateDashboardOverlay.apply(pointer,empty,overlayHandle,overlayThumbnailHandle);
+        if (ret != 0) {
+            logger.error("VR Overlay Error: " + vrOverlay.GetOverlayErrorNameFromEnum.apply(ret).getString(0));
+        }
+        else {
+            vrOverlay.SetOverlayWidthInMeters.apply(overlayHandle.getValue(), 1.5f );
+            vrOverlay.SetOverlayInputMethod.apply(overlayHandle.getValue(),
+                    JOpenVRLibrary.VROverlayInputMethod.VROverlayInputMethod_Mouse);
+        }
+       return true;
     }
 }
