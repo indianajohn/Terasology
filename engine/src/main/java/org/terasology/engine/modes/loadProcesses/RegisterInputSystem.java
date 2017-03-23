@@ -16,6 +16,8 @@
 
 package org.terasology.engine.modes.loadProcesses;
 
+import org.terasology.config.Config;
+import org.terasology.config.RenderingConfig;
 import org.terasology.context.Context;
 import org.terasology.engine.ComponentSystemManager;
 import org.terasology.input.InputSystem;
@@ -40,6 +42,7 @@ public class RegisterInputSystem extends SingleStepLoadProcess {
     public boolean step() {
         ComponentSystemManager componentSystemManager = context.get(ComponentSystemManager.class);
 
+        context.put(RenderingConfig.class, context.get(Config.class).getRendering());
         LocalPlayerSystem localPlayerSystem = new LocalPlayerSystem();
         componentSystemManager.register(localPlayerSystem, "engine:localPlayerSystem");
         context.put(LocalPlayerSystem.class, localPlayerSystem);

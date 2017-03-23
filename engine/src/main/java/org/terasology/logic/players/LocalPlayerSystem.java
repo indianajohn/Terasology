@@ -18,6 +18,7 @@ package org.terasology.logic.players;
 import org.terasology.assets.ResourceUrn;
 import org.terasology.config.BindsConfig;
 import org.terasology.config.Config;
+import org.terasology.config.RenderingConfig;
 import org.terasology.engine.SimpleUri;
 import org.terasology.engine.Time;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -107,16 +108,20 @@ public class LocalPlayerSystem extends BaseComponentSystem implements UpdateSubs
 
     @In
     private Config config;
+
     @In
     private InputSystem inputSystem;
 
     private BindsConfig bindsConfig;
+
+    @In
+    private RenderingConfig renderingConfig;
     private float bobFactor;
     private float lastStepDelta;
 
     // Input
     private Vector3f relativeMovement = new Vector3f();
-    private boolean isAutoMove = false;
+    private boolean isAutoMove;
     private boolean runPerDefault = true;
     private boolean run = runPerDefault;
     private boolean jump;
@@ -134,7 +139,6 @@ public class LocalPlayerSystem extends BaseComponentSystem implements UpdateSubs
     private int inputSequenceNumber = 1;
 
     private AABB aabb;
-
 
     public void setPlayerCamera(Camera camera) {
         playerCamera = camera;
@@ -165,7 +169,7 @@ public class LocalPlayerSystem extends BaseComponentSystem implements UpdateSubs
         Quat4f viewRotation;
         switch (characterMovementComponent.mode) {
             case WALKING:
-                if (!config.getRendering().isVrSupport()) {
+                if (!renderingConfig.isVrSupport()) {
                     viewRotation = new Quat4f(TeraMath.DEG_TO_RAD * lookYaw, 0, 0);
                     playerCamera.setOrientation(viewRotation);
                 }
@@ -228,8 +232,8 @@ public class LocalPlayerSystem extends BaseComponentSystem implements UpdateSubs
 
     // To check if a valid key has been assigned, either primary or secondary and return it
     private Input getValidKey(List<Input> inputs) {
-        for(Input input: inputs) {
-            if(input != null) {
+        for (Input input: inputs) {
+            if (input != null) {
                 return input;
             }
         }
@@ -243,7 +247,7 @@ public class LocalPlayerSystem extends BaseComponentSystem implements UpdateSubs
     private void stopAutoMove() {
         List<Input> inputs = bindsConfig.getBinds(new SimpleUri("engine:forwards"));
         Input forwardKey = getValidKey(inputs);
-        if(forwardKey != null) {
+        if (forwardKey != null) {
             inputSystem.cancelSimulatedKeyStroke(forwardKey);
             isAutoMove = false;
         }
@@ -259,7 +263,7 @@ public class LocalPlayerSystem extends BaseComponentSystem implements UpdateSubs
         bindsConfig = config.getInput().getBinds();
         List<Input> inputs = bindsConfig.getBinds(new SimpleUri("engine:forwards"));
         Input forwardKey = getValidKey(inputs);
-        if(forwardKey != null) {
+        if (forwardKey != null) {
             isAutoMove = true;
             inputSystem.simulateSingleKeyStroke(forwardKey);
             inputSystem.simulateRepeatedKeyStroke(forwardKey);
@@ -325,7 +329,7 @@ public class LocalPlayerSystem extends BaseComponentSystem implements UpdateSubs
     @ReceiveEvent(components = {ClientComponent.class})
     public void updateForwardsMovement(ForwardsMovementAxis event, EntityRef entity) {
         relativeMovement.z = event.getValue();
-        if(relativeMovement.z == 0f && isAutoMove) {
+        if (relativeMovement.z == 0f && isAutoMove) {
             stopAutoMove();
         }
         event.consume();
